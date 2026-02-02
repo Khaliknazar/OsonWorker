@@ -1,0 +1,5 @@
+arq
+redis
+httpx
+requests
+google-genai

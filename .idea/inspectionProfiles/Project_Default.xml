@@ -1,0 +1,128 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="DuplicatedCode" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <Languages>
+        <language minSize="80" name="Python" />
+      </Languages>
+    </inspection_tool>
+    <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="myValues">
+        <value>
+          <list size="4">
+            <item index="0" class="java.lang.String" itemvalue="room_id" />
+            <item index="1" class="java.lang.String" itemvalue="}}" />
+            <item index="2" class="java.lang.String" itemvalue="room.id" />
+            <item index="3" class="java.lang.String" itemvalue="source" />
+          </list>
+        </value>
+      </option>
+      <option name="myCustomValuesEnabled" value="true" />
+    </inspection_tool>
+    <inspection_tool class="PyInterpreterInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="87">
+            <item index="0" class="java.lang.String" itemvalue="GeoAlchemy2" />
+            <item index="1" class="java.lang.String" itemvalue="tiktoken" />
+            <item index="2" class="java.lang.String" itemvalue="httpx" />
+            <item index="3" class="java.lang.String" itemvalue="aiogram" />
+            <item index="4" class="java.lang.String" itemvalue="ffmpeg-python" />
+            <item index="5" class="java.lang.String" itemvalue="cryptography" />
+            <item index="6" class="java.lang.String" itemvalue="pydub" />
+            <item index="7" class="java.lang.String" itemvalue="deep-translator" />
+            <item index="8" class="java.lang.String" itemvalue="yookassa" />
+            <item index="9" class="java.lang.String" itemvalue="openai" />
+            <item index="10" class="java.lang.String" itemvalue="boto3" />
+            <item index="11" class="java.lang.String" itemvalue="langchain" />
+            <item index="12" class="java.lang.String" itemvalue="pillow" />
+            <item index="13" class="java.lang.String" itemvalue="cachetools" />
+            <item index="14" class="java.lang.String" itemvalue="apscheduler" />
+            <item index="15" class="java.lang.String" itemvalue="aiohttp" />
+            <item index="16" class="java.lang.String" itemvalue="aiomysql" />
+            <item index="17" class="java.lang.String" itemvalue="asyncio" />
+            <item index="18" class="java.lang.String" itemvalue="pydantic" />
+            <item index="19" class="java.lang.String" itemvalue="greenlet" />
+            <item index="20" class="java.lang.String" itemvalue="asyncpg" />
+            <item index="21" class="java.lang.String" itemvalue="opencv-python" />
+            <item index="22" class="java.lang.String" itemvalue="SQLAlchemy" />
+            <item index="23" class="java.lang.String" itemvalue="aiofiles" />
+            <item index="24" class="java.lang.String" itemvalue="aiohappyeyeballs" />
+            <item index="25" class="java.lang.String" itemvalue="attrs" />
+            <item index="26" class="java.lang.String" itemvalue="frozenlist" />
+            <item index="27" class="java.lang.String" itemvalue="pydantic_core" />
+            <item index="28" class="java.lang.String" itemvalue="propcache" />
+            <item index="29" class="java.lang.String" itemvalue="certifi" />
+            <item index="30" class="java.lang.String" itemvalue="typing_extensions" />
+            <item index="31" class="java.lang.String" itemvalue="multidict" />
+            <item index="32" class="java.lang.String" itemvalue="yarl" />
+            <item index="33" class="java.lang.String" itemvalue="idna" />
+            <item index="34" class="java.lang.String" itemvalue="aioredis" />
+            <item index="35" class="java.lang.String" itemvalue="tzlocal" />
+            <item index="36" class="java.lang.String" itemvalue="win32_setctime" />
+            <item index="37" class="java.lang.String" itemvalue="PyYAML" />
+            <item index="38" class="java.lang.String" itemvalue="tonutils" />
+            <item index="39" class="java.lang.String" itemvalue="aioschedule" />
+            <item index="40" class="java.lang.String" itemvalue="h11" />
+            <item index="41" class="java.lang.String" itemvalue="marshmallow" />
+            <item index="42" class="java.lang.String" itemvalue="setuptools" />
+            <item index="43" class="java.lang.String" itemvalue="MarkupSafe" />
+            <item index="44" class="java.lang.String" itemvalue="pycparser" />
+            <item index="45" class="java.lang.String" itemvalue="pytonlib" />
+            <item index="46" class="java.lang.String" itemvalue="trio" />
+            <item index="47" class="java.lang.String" itemvalue="PyNaCl" />
+            <item index="48" class="java.lang.String" itemvalue="pycryptodomex" />
+            <item index="49" class="java.lang.String" itemvalue="starlette" />
+            <item index="50" class="java.lang.String" itemvalue="anyio" />
+            <item index="51" class="java.lang.String" itemvalue="uvicorn" />
+            <item index="52" class="java.lang.String" itemvalue="x25519" />
+            <item index="53" class="java.lang.String" itemvalue="graphql-core" />
+            <item index="54" class="java.lang.String" itemvalue="loguru" />
+            <item index="55" class="java.lang.String" itemvalue="click" />
+            <item index="56" class="java.lang.String" itemvalue="wsproto" />
+            <item index="57" class="java.lang.String" itemvalue="crypto" />
+            <item index="58" class="java.lang.String" itemvalue="PySocks" />
+            <item index="59" class="java.lang.String" itemvalue="internationalization-py" />
+            <item index="60" class="java.lang.String" itemvalue="pytonconnect" />
+            <item index="61" class="java.lang.String" itemvalue="tvm-valuetypes" />
+            <item index="62" class="java.lang.String" itemvalue="shellescape" />
+            <item index="63" class="java.lang.String" itemvalue="environs" />
+            <item index="64" class="java.lang.String" itemvalue="async-timeout" />
+            <item index="65" class="java.lang.String" itemvalue="tonsdk" />
+            <item index="66" class="java.lang.String" itemvalue="trio-websocket" />
+            <item index="67" class="java.lang.String" itemvalue="cffi" />
+            <item index="68" class="java.lang.String" itemvalue="pytoniq-core" />
+            <item index="69" class="java.lang.String" itemvalue="bitarray" />
+            <item index="70" class="java.lang.String" itemvalue="Jinja2" />
+            <item index="71" class="java.lang.String" itemvalue="sniffio" />
+            <item index="72" class="java.lang.String" itemvalue="websocket-client" />
+            <item index="73" class="java.lang.String" itemvalue="crc16" />
+            <item index="74" class="java.lang.String" itemvalue="selenium" />
+            <item index="75" class="java.lang.String" itemvalue="outcome" />
+            <item index="76" class="java.lang.String" itemvalue="tzdata" />
+            <item index="77" class="java.lang.String" itemvalue="aiohttp-sse-client" />
+            <item index="78" class="java.lang.String" itemvalue="Naked" />
+            <item index="79" class="java.lang.String" itemvalue="sortedcontainers" />
+            <item index="80" class="java.lang.String" itemvalue="fastapi" />
+            <item index="81" class="java.lang.String" itemvalue="crc32c" />
+            <item index="82" class="java.lang.String" itemvalue="Unidecode" />
+            <item index="83" class="java.lang.String" itemvalue="colorama" />
+            <item index="84" class="java.lang.String" itemvalue="Internationalization" />
+            <item index="85" class="java.lang.String" itemvalue="pycryptodome" />
+            <item index="86" class="java.lang.String" itemvalue="aiosignal" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="ignoredErrors">
+        <list>
+          <option value="N802" />
+          <option value="N806" />
+          <option value="N803" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
