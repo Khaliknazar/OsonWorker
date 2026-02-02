@@ -20,7 +20,6 @@ local rpm = tonumber(ARGV[3])
 local conc = tonumber(ARGV[4])
 local sem_ttl = tonumber(ARGV[5])
 
--- Concurrency check (if enabled)
 if conc > 0 then
   local current = tonumber(redis.call("GET", sem_key) or "0")
   if current >= conc then
@@ -28,7 +27,6 @@ if conc > 0 then
   end
 end
 
--- RPM check (if enabled)
 if rpm > 0 then
   local cutoff = now - window
   redis.call("ZREMRANGEBYSCORE", rpm_key, 0, cutoff)
@@ -38,13 +36,11 @@ if rpm > 0 then
   end
 end
 
--- Acquire semaphore (if enabled)
 if conc > 0 then
   redis.call("INCR", sem_key)
   redis.call("PEXPIRE", sem_key, sem_ttl)
 end
 
--- Consume RPM token (if enabled)
 if rpm > 0 then
   local member = tostring(now) .. "-" .. tostring(redis.call("INCR", rpm_key .. ":seq"))
   redis.call("ZADD", rpm_key, now, member)
@@ -87,11 +83,15 @@ class RateLimiter:
         start = time.monotonic()
         while True:
             now = time.time()
+
+            # IMPORTANT: redis eval signature is: eval(script, numkeys, *keys_and_args)
             ok, reason = await self.redis.eval(
                 LUA_ACQUIRE,
-                keys=[rpm_key, sem_key],
-                args=[now, window_s, rpm_arg, conc_arg, sem_ttl_ms],
+                2,              # numkeys
+                rpm_key, sem_key,
+                now, window_s, rpm_arg, conc_arg, sem_ttl_ms
             )
+
             if int(ok) == 1:
                 return
 
@@ -102,4 +102,6 @@ class RateLimiter:
 
     async def release(self, model_key: str):
         sem_key = f"lim:sem:{model_key}"
-        await self.redis.eval(LUA_RELEASE, keys=[sem_key], args=[])
+
+        # numkeys = 1, then key, then args (none here)
+        await self.redis.eval(LUA_RELEASE, 1, sem_key)

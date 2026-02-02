@@ -16,6 +16,7 @@ if not BOT_TOKEN:
 
 tg = TelegramClient(BOT_TOKEN)
 
+
 async def generate_and_send(ctx, payload: dict, user_id: int):
     redis = ctx["redis"]
 
@@ -50,7 +51,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
             await tg.send_text(
                 user_id,
                 "Ошибка при генерации! Попробуйте ещё раз.\n\nPrompt:\n"
-                f"<code>{payload.get('prompt','')}</code>"
+                f"<code>{payload.get('prompt', '')}</code>"
             )
             return
 
