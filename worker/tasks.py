@@ -4,7 +4,7 @@ import logging
 
 from worker.policies import POLICIES
 from worker.limiter import RateLimiter
-from worker.telegram import TelegramClient
+from worker.telegram import TelegramClient, OsonIntelektServer
 from worker.handlers import HANDLERS
 
 log = logging.getLogger(__name__)
@@ -15,6 +15,7 @@ if not BOT_TOKEN:
     raise RuntimeError("BOT_TOKEN is not set")
 
 tg = TelegramClient(BOT_TOKEN)
+oson = OsonIntelektServer()
 
 
 async def generate_and_send(ctx, payload: dict, user_id: int):
@@ -41,7 +42,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
             max_wait_s=120,  # if queue is huge, fail fast
         )
     except TimeoutError:
-        await tg.send_text(user_id, f"Xato, Iltimos keginroq qayta urinib ko'ring\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
+        await tg.send_text(user_id, f"Navbat ko'p, Iltimos keginroq qayta urinib ko'ring\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
         return
 
     try:
@@ -50,9 +51,10 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
         if not result.get("ok"):
             await tg.send_text(
                 user_id,
-                "Yaratishda xatolik! Qayta urinib ko'ring.\n\nPrompt:\n"
+                f"Yaratishda xatolik! Qayta urinib ko'ring\n{result.get('error')}.\n\nPrompt:\n"
                 f"<code>{payload.get('prompt', '')}</code>"
             )
+            await oson.send_job_status(payload['job_id'], 'FAILED')
             return
 
         mime = result["mime"]
@@ -61,13 +63,17 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
 
         await tg.send_document(user_id, filename, result["bytes"], mime, caption="@OsonIntelektBot")
         await tg.send_text(user_id, "✅ Yakunlandi!\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
-
+        await oson.send_job_status(payload['job_id'], 'FINISHED')
     except Exception:
         log.exception("Generation failed")
+        try:
+            await oson.send_job_status(payload['job_id'], 'FAILED')
+        except Exception as e:
+            log.error(f"Error sending status to server! job_id: {payload['job_id']} error: {e}")
 
         try:
-            await tg.send_text(user_id, "Xato, Iltimos keginroq qayta urinib ko'ring.\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
-        except Exception:
+            await tg.send_text(user_id, f"Xato, Iltimos keginroq qayta urinib ko'ring.\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
+        except:
             pass
         raise
     finally:

@@ -8,7 +8,7 @@ from google.genai.types import Part, GenerateContentConfig, FinishReason
 
 from worker.config import client
 
-DOWNLOAD_SEM = asyncio.Semaphore(int(os.getenv("DOWNLOAD_CONCURRENCY", "10")))
+DOWNLOAD_SEM = asyncio.Semaphore(int(os.getenv("DOWNLOAD_CONCURRENCY", "20")))
 
 
 def _download_sync(url: str) -> bytes:
@@ -41,9 +41,9 @@ async def run(payload: dict) -> dict:
         contents=contents,
         config=GenerateContentConfig(response_modalities=["Image"]),
     )
-    logging.info(response)
-    if response.candidates[0].finish_reason == FinishReason.NO_IMAGE:
-        return {"ok": False, "error": "NO_IMAGE"}
+    if response.candidates[0].finish_reason != FinishReason.STOP:
+        logging.error(response)
+        return {"ok": False, "error": f"finish reason {response.candidates[0].finish_reason}"}
 
     image_part = next(p.inline_data for p in response.candidates[0].content.parts if p.inline_data)
 

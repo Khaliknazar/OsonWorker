@@ -1,3 +1,5 @@
+import os
+
 import httpx
 
 class TelegramClient:
@@ -22,3 +24,14 @@ class TelegramClient:
             files = {"document": (filename, file_bytes, mime_type)}
             data = {"chat_id": chat_id, "caption": caption}
             await s.post(f"{self.base}/sendDocument", data=data, files=files)
+
+
+class OsonIntelektServer:
+    def __init__(self):
+        self.base = os.getenv("BASE_URL")
+
+    async def send_job_status(self, job_id: int, status: str):
+        async with httpx.AsyncClient(timeout=30) as s:
+            data = {'job_id': job_id, 'status': status}
+            await s.post(f"{self.base}/api/job-status", data=data)
+
