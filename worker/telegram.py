@@ -1,6 +1,17 @@
+import logging
 import os
+import re
 
 import httpx
+
+BOT_TOKEN_RE = re.compile(r"(bot)(\d+:[A-Za-z0-9_-]+)")
+
+class TelegramTokenFilter(logging.Filter):
+    def filter(self, record: logging.LogRecord) -> bool:
+        if isinstance(record.msg, str):
+            record.msg = BOT_TOKEN_RE.sub(r"\1***REDACTED***", record.msg)
+        return True
+
 
 class TelegramClient:
     def __init__(self, bot_token: str):
@@ -29,9 +40,10 @@ class TelegramClient:
 class OsonIntelektServer:
     def __init__(self):
         self.base = os.getenv("BASE_URL")
+        self.api_key = os.getenv("SERVER_API_KEY")
 
     async def send_job_status(self, job_id: int, status: str):
         async with httpx.AsyncClient(timeout=30) as s:
             data = {'job_id': job_id, 'status': status}
-            await s.post(f"{self.base}/api/job-status", data=data)
-
+            headers = {'x-telegram-init-data': self.api_key, 'Content-Type': 'application/json'}
+            await s.post(f"{self.base}/api/job-status", data=data, headers=headers)

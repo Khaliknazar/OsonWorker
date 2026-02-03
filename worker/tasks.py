@@ -4,11 +4,12 @@ import logging
 
 from worker.policies import POLICIES
 from worker.limiter import RateLimiter
-from worker.telegram import TelegramClient, OsonIntelektServer
+from worker.telegram import TelegramClient, OsonIntelektServer, TelegramTokenFilter
 from worker.handlers import HANDLERS
 
 log = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+logging.getLogger("httpx").addFilter(TelegramTokenFilter())
 
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 if not BOT_TOKEN:
@@ -62,7 +63,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
         filename = f"OsonIntelektBot.{ext}"
 
         await tg.send_document(user_id, filename, result["bytes"], mime, caption="@OsonIntelektBot")
-        await tg.send_text(user_id, "✅ Yakunlandi!\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
+        await tg.send_text(user_id, f"✅ Yakunlandi!\n\nPrompt:\n<quote>{payload.get('prompt', '')}</quote>")
         await oson.send_job_status(payload['job_id'], 'FINISHED')
     except Exception:
         log.exception("Generation failed")
