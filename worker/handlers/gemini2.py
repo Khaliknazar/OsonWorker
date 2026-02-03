@@ -1,3 +1,4 @@
+import logging
 import os
 import asyncio
 import mimetypes
@@ -9,12 +10,15 @@ from worker.config import client
 
 DOWNLOAD_SEM = asyncio.Semaphore(int(os.getenv("DOWNLOAD_CONCURRENCY", "10")))
 
+
 def _download_sync(url: str) -> bytes:
     return requests.get(url, timeout=30).content
+
 
 async def _download(url: str) -> bytes:
     async with DOWNLOAD_SEM:
         return await asyncio.to_thread(_download_sync, url)
+
 
 def _make_client():
     api_key = os.getenv("GEMINI_API_KEY")
@@ -23,9 +27,7 @@ def _make_client():
     return genai.Client(api_key=api_key)
 
 
-
 async def run(payload: dict) -> dict:
-
     contents = [payload["prompt"]]
 
     for img_url in payload.get("images", []):
@@ -39,7 +41,7 @@ async def run(payload: dict) -> dict:
         contents=contents,
         config=GenerateContentConfig(response_modalities=["Image"]),
     )
-
+    logging.info(response)
     if response.candidates[0].finish_reason == FinishReason.NO_IMAGE:
         return {"ok": False, "error": "NO_IMAGE"}
 
