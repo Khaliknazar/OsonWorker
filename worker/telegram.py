@@ -44,6 +44,6 @@ class OsonIntelektServer:
 
     async def send_job_status(self, job_id: int, status: str):
         async with httpx.AsyncClient(timeout=30) as s:
-            data = {'job_id': job_id, 'status': status}
-            headers = {'x-telegram-init-data': self.api_key, 'Content-Type': 'application/json'}
-            await s.post(f"{self.base}/api/job-status", data=data, headers=headers)
+            payload = {'job_id': job_id, 'status': status}
+            headers = {'x-telegram-init-data': self.api_key}
+            await s.post(f"{self.base}/api/job-status", json=payload, headers=headers)

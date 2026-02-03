@@ -63,7 +63,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
         filename = f"OsonIntelektBot.{ext}"
 
         await tg.send_document(user_id, filename, result["bytes"], mime, caption="@OsonIntelektBot")
-        await tg.send_text(user_id, f"✅ Yakunlandi!\n\nPrompt:\n<quote>{payload.get('prompt', '')}</quote>")
+        await tg.send_text(user_id, f"✅ Yakunlandi!\n\nPrompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
         await oson.send_job_status(payload['job_id'], 'FINISHED')
     except Exception:
         log.exception("Generation failed")
