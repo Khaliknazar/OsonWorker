@@ -4,7 +4,7 @@ import asyncio
 import mimetypes
 import requests
 from google import genai
-from google.genai.types import Part, GenerateContentConfig, FinishReason
+from google.genai.types import Part, GenerateContentConfig, FinishReason, ImageConfig
 
 from worker.config import client
 
@@ -39,9 +39,13 @@ async def run(payload: dict) -> dict:
 
     response = await asyncio.to_thread(
         client.models.generate_content,
-        model="gemini-2.5-flash-image",
+        model="gemini-3-pro-image-preview",
         contents=contents,
-        config=GenerateContentConfig(response_modalities=["Image"]),
+        config=GenerateContentConfig(response_modalities=["Image"],
+                                     image_config=ImageConfig(
+                                         aspect_ratio=payload["aspect_ratio"],
+                                         image_size=payload["quality"],
+                                     )),
     )
     if response.candidates[0].finish_reason != FinishReason.STOP:
         logging.error(response)
