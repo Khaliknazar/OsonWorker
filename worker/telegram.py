@@ -4,6 +4,8 @@ import re
 
 import httpx
 
+from worker import config
+
 BOT_TOKEN_RE = re.compile(r"(bot)(\d+:[A-Za-z0-9_-]+)")
 
 class TelegramTokenFilter(logging.Filter):
@@ -39,11 +41,11 @@ class TelegramClient:
 
 class OsonIntelektServer:
     def __init__(self):
-        self.base = os.getenv("BASE_URL")
-        self.api_key = os.getenv("SERVER_API_KEY")
+        self.base = config.BASE_URL
+        self.api_key = config.SERVER_KEY
 
-    async def send_job_status(self, job_id: int, status: str):
+    async def send_job_status(self, job_id: int, status: str, task_id: str | None = None):
         async with httpx.AsyncClient(timeout=30) as s:
-            payload = {'job_id': job_id, 'status': status}
+            payload = {'job_id': job_id, 'status': status, 'task_id': task_id}
             headers = {'x-telegram-init-data': self.api_key}
             await s.post(f"{self.base}/api/job-status", json=payload, headers=headers)

@@ -43,7 +43,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
             max_wait_s=120,  # if queue is huge, fail fast
         )
     except TimeoutError:
-        await tg.send_text(user_id, f"Navbat ko'p, Iltimos keginroq qayta urinib ko'ring\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
+        await tg.send_text(user_id, f"<tg-emoji emoji-id='5258474669769497337'>⚠️</tg-emoji>️ Navbat ko'p, Iltimos keginroq qayta urinib ko'ring\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
         return
 
     try:
@@ -52,10 +52,16 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
         if not result.get("ok"):
             await tg.send_text(
                 user_id,
-                f"Yaratishda xatolik! Qayta urinib ko'ring\n{result.get('error')}.\n\nPrompt:\n"
-                f"<code>{payload.get('prompt', '')}</code>"
+                f"<tg-emoji emoji-id='5258474669769497337'>⚠️</tg-emoji>️ Yaratishda xatolik! Qayta urinib ko'ring\n{result.get('error')}.\n\nPrompt:\n"
+                f"<blockquote expandable>{payload.get('prompt', '')}</blockquote>"
             )
             await oson.send_job_status(payload['job_id'], 'FAILED')
+            return
+
+        if result.get('task_id', False):
+            await tg.send_text(user_id, f"<tg-emoji emoji-id='5258077307985207053'>©️</tg-emoji>️ Video tayyornalmoqda!\n\n"
+                                        f"<tg-emoji emoji-id='5249231689695115145'>©️</tg-emoji>️ Prompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
+            await oson.send_job_status(payload['job_id'], 'PROCESSING', task_id=result.get('task_id'))
             return
 
         mime = result["mime"]
@@ -63,7 +69,8 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
         filename = f"OsonIntelektBot.{ext}"
 
         await tg.send_document(user_id, filename, result["bytes"], mime, caption="@OsonIntelektBot")
-        await tg.send_text(user_id, f"✅ Yakunlandi!\n\nPrompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
+        await tg.send_text(user_id, f"<tg-emoji emoji-id='5260416304224936047'>©️</tg-emoji>️ Yakunlandi!\n\n"
+                                    f"<tg-emoji emoji-id='5249231689695115145'>©️</tg-emoji>️ Prompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
         await oson.send_job_status(payload['job_id'], 'FINISHED')
     except Exception:
         log.exception("Generation failed")
@@ -73,7 +80,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
             log.error(f"Error sending status to server! job_id: {payload['job_id']} error: {e}")
 
         try:
-            await tg.send_text(user_id, f"Xato, Iltimos keginroq qayta urinib ko'ring.\n\nPrompt:\n<code>{payload.get('prompt', '')}</code>")
+            await tg.send_text(user_id, f"<tg-emoji emoji-id='5258474669769497337'>⚠️</tg-emoji>️ Xato, Iltimos keginroq qayta urinib ko'ring.\n\nPrompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
         except:
             pass
         raise

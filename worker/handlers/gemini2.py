@@ -20,13 +20,6 @@ async def _download(url: str) -> bytes:
         return await asyncio.to_thread(_download_sync, url)
 
 
-def _make_client():
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY is not set")
-    return genai.Client(api_key=api_key)
-
-
 async def run(payload: dict) -> dict:
     if bool(payload["is_test"]):
         return {'ok': False, 'error': "Fake error"}
@@ -37,15 +30,26 @@ async def run(payload: dict) -> dict:
         mime_type = mimetypes.guess_type(img_url)[0] or "image/jpeg"
         contents.append(Part.from_bytes(data=image_bytes, mime_type=mime_type))
 
-    response = await asyncio.to_thread(
-        client.models.generate_content,
-        model="gemini-2.5-flash-image",
-        contents=contents,
-        config=GenerateContentConfig(response_modalities=["Image"]),
-    )
-    if response.candidates[0].finish_reason != FinishReason.STOP:
-        logging.error(response)
-        return {"ok": False, "error": f"finish reason {response.candidates[0].finish_reason}"}
+    try:
+
+        response = await asyncio.to_thread(
+            client.models.generate_content,
+            model="gemini-2.5-flash-image",
+            contents=contents,
+            config=GenerateContentConfig(response_modalities=["Image"]),
+        )
+    except Exception as e:
+        logging.exception(e)
+        return {'ok': False, 'error': 'Error when creating image'}
+    candidates = getattr(response, "candidates", None)
+    if not candidates:
+        return {'ok': False, 'error': 'No images in response found'}
+
+    cand0 = candidates[0]
+    finish_reason = getattr(cand0, "finish_reason", None)
+    if finish_reason is not None and finish_reason != FinishReason.STOP:
+        return {'ok': False, 'error': "Finish reason doesn't match"}
+
 
     image_part = next(p.inline_data for p in response.candidates[0].content.parts if p.inline_data)
 
