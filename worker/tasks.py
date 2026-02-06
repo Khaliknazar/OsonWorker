@@ -48,6 +48,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
 
     try:
         result = await asyncio.wait_for(handler(payload), timeout=policy.timeout_s)
+        logging.info(result)
 
         if not result.get("ok"):
             await tg.send_text(
