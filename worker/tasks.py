@@ -39,6 +39,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
         await limiter.acquire(
             model_key=model_key,
             rpm=policy.rpm,
+            window_s=policy.window_s,
             concurrency=policy.concurrency,
             max_wait_s=120,  # if queue is huge, fail fast
         )
@@ -81,7 +82,7 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
             log.error(f"Error sending status to server! job_id: {payload['job_id']} error: {e}")
 
         try:
-            await tg.send_text(user_id, f"<tg-emoji emoji-id='5258474669769497337'>⚠️</tg-emoji>️ Xato, Iltimos keginroq qayta urinib ko'ring.\n\nPrompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
+            await tg.send_text(user_id, f"<tg-emoji emoji-id='5258474669769497337'>⚠️</tg-emoji>️ Xato, Iltimos keginroq qayta urinib ko'ring.\n\n<tg-emoji emoji-id='5249231689695115145'>©️</tg-emoji>️ Prompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
         except:
             pass
         raise

@@ -4,7 +4,8 @@ from typing import Optional
 
 @dataclass(frozen=True)
 class ModelPolicy:
-    rpm: Optional[int] = None
+    rpm: Optional[int] = None,
+    window_s: int = 60
     concurrency: Optional[int] = None
     timeout_s: int = 600
 
@@ -12,7 +13,8 @@ class ModelPolicy:
 POLICIES: dict[str, ModelPolicy] = {
     "gemini_2_5_image": ModelPolicy(rpm=500, concurrency=50),
     "gemini_3_image": ModelPolicy(rpm=20, concurrency=4),
-    "kling_2_6_video": ModelPolicy(concurrency=3)
+    "kling_2_6_video": ModelPolicy(concurrency=3),
+    'kieapi': ModelPolicy(concurrency=10, rpm=20, window_s=20),
 
     # # examples: local/other providers
     # "sdxl_api": ModelPolicy(rpm=60, concurrency=10),
