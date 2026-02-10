@@ -7,16 +7,15 @@ from worker import config
 
 class KieApi:
     def __init__(self):
-        self.base = "https://api.kie.ai/api/v1/jobs/createTask"
-        self.api_key = config.KIE_API_KEY
-
-    async def create_task(self, payload: dict):
-        headers = {
-            "Authorization": f"Bearer {self.api_key}",
+        self.base = "https://api.kie.ai"
+        self.headers = {
+            "Authorization": f"Bearer {config.KIE_API_KEY}",
             "Content-Type": "application/json"
         }
+
+    async def create_task(self, payload: dict, request_url: str):
         async with httpx.AsyncClient(timeout=30) as s:
-            r = await s.post(self.base, headers=headers, json=payload)
+            r = await s.post(self.base + request_url, headers=self.headers, json=payload)
             r.raise_for_status()
             data = r.json()
             if data.get('code', 0) == 200:
@@ -32,8 +31,10 @@ async def run(payload: dict) -> dict:
 
     kie_api = KieApi()
     try:
+
         body = payload.get('body')
-        s = await kie_api.create_task(body)
+        request_url = payload.get('request_url')
+        s = await kie_api.create_task(body, request_url)
     except Exception as e:
         logging.error(e)
         return {'ok': False, 'error': str(e)}

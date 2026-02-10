@@ -61,8 +61,8 @@ async def generate_and_send(ctx, payload: dict, user_id: int):
             return
 
         if result.get('task_id', False):
-            await tg.send_text(user_id, f"<tg-emoji emoji-id='5258077307985207053'>©️</tg-emoji>️ Video tayyornalmoqda!\n\n"
-                                        f"<tg-emoji emoji-id='5249231689695115145'>©️</tg-emoji>️ Prompt:\n<blockquote expandable>{payload.get('prompt', '')}</blockquote>")
+            await tg.send_text(user_id, f"<tg-emoji emoji-id='5258077307985207053'>©️</tg-emoji>️ {payload['media_type']} tayyornalmoqda!\n\n"
+                                        f"<tg-emoji emoji-id='5249231689695115145'>©️</tg-emoji>️ Prompt:\n<blockquote expandable>{payload['body'].get('prompt', 'kiritilmagan')}</blockquote>")
             await oson.send_job_status(payload['job_id'], 'PROCESSING', task_id=result.get('task_id'))
             return
 
