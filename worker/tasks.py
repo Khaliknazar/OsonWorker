@@ -58,7 +58,8 @@ async def runway_create(ctx, payload: dict):
     message_id = m['result']['message_id']
 
     job_data = {'task_id': r['task_id'], 'message_id': message_id, 'prompt': payload['body']['promptText'],
-                'user_id': user_id, 'media_type': payload['media_type'], 'job_id': int(payload['job_id'])}
+                'user_id': user_id, 'media_type': payload['media_type'], 'job_id': payload['job_id'],
+                'started_at': time.time()}
 
     await ctx["redis"].enqueue_job(
         "poll_job",
@@ -92,7 +93,7 @@ async def poll_job(ctx, job_data: dict):
             f"<tg-emoji emoji-id='5258474669769497337'>⚠️</tg-emoji>️ Yaratishda xatolik! Qayta urinib ko'ring\n{r.get('error')}.\n\nPrompt:\n"
             f"<blockquote expandable>{job_data['prompt']}</blockquote>"
         )
-        await oson.send_job_status(job_data['prompt'], 'FAILED')
+        await oson.send_job_status(job_data['job_id'], 'FAILED')
         return
     progress = r.get('progress', False)
     if progress:
