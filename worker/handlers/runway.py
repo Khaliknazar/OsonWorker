@@ -16,7 +16,7 @@ async def post_json(path: str, body: dict) -> dict:
             json=body,
         )
         r.raise_for_status()
-        js = await r.json()
+        js = r.json()
         if r.status_code != 200:
             return {'code': r.status_code, 'error': js['error']}
         return js
