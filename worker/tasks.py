@@ -52,12 +52,12 @@ async def runway_create(ctx, payload: dict):
         return
 
     m = await tg.send_text(user_id,
-                           f"<tg-emoji emoji-id='5256112304612741267'>©️</tg-emoji>️ <b>{payload['media_type']} tayyornalmoqda!</b>"
+                           f"<tg-emoji emoji-id='5256112304612741267'>©️</tg-emoji>️ <b>{payload['media_type']} tayyornalmoqda!</b>\n"
                            f"<tg-emoji emoji-id='5283112212792121487'>©️</tg-emoji>️ <b>Progress: 0%</b>\n\n"
                            f"<tg-emoji emoji-id='5249231689695115145'>©️</tg-emoji>️ <b>Prompt:</b>\n<blockquote expandable>{payload['body']['promptText']}</blockquote>")
     message_id = m['result']['message_id']
 
-    job_data = {'task_id': r['task_id'], 'message_id': message_id, 'prompt': payload['body']['prompt'],
+    job_data = {'task_id': r['task_id'], 'message_id': message_id, 'prompt': payload['body']['promptText'],
                 'user_id': user_id, 'media_type': payload['media_type'], 'job_id': int(payload['job_id'])}
 
     await ctx["redis"].enqueue_job(
