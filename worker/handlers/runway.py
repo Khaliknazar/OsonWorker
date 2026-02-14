@@ -11,7 +11,8 @@ async def post_json(path: str, body: dict) -> dict:
     async with httpx.AsyncClient(timeout=30) as s:
         r = await s.post(
             f"{BASE}{path}",
-            headers={"Content-Type": "application/json", "Authorization": f"Bearer {config.RUNWAY_API_KEY}"},
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {config.RUNWAY_API_KEY}",
+                     "X-Runway-Version": "2024-11-06"},
             json=body,
         )
         r.raise_for_status()
