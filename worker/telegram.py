@@ -1,18 +1,6 @@
-import logging
-import os
-import re
-
 import httpx
 
 from worker import config
-
-BOT_TOKEN_RE = re.compile(r"(bot)(\d+:[A-Za-z0-9_-]+)")
-
-class TelegramTokenFilter(logging.Filter):
-    def filter(self, record: logging.LogRecord) -> bool:
-        if isinstance(record.msg, str):
-            record.msg = BOT_TOKEN_RE.sub(r"\1***REDACTED***", record.msg)
-        return True
 
 
 class TelegramClient:
@@ -22,10 +10,19 @@ class TelegramClient:
 
     async def send_text(self, chat_id: int, text: str):
         async with httpx.AsyncClient(timeout=30) as s:
-            await s.post(
+            a = await s.post(
                 f"{self.base}/sendMessage",
                 data={"chat_id": chat_id, "text": text, "parse_mode": "HTML"},
             )
+            return a.json()
+
+    async def edit_text(self, chat_id: int, text: str, message_id: int):
+        async with httpx.AsyncClient(timeout=30) as s:
+            a = await s.post(
+                f"{self.base}/editMessageText",
+                data={"chat_id": chat_id, "text": text,'message_id': message_id, "parse_mode": "HTML"},
+            )
+            return a.json()
 
     async def send_action(self, chat_id: int, action: str):
         async with httpx.AsyncClient(timeout=10) as s:
@@ -49,3 +46,9 @@ class OsonIntelektServer:
             payload = {'job_id': job_id, 'status': status, 'task_id': task_id}
             headers = {'x-telegram-init-data': self.api_key}
             await s.post(f"{self.base}/api/job-status", json=payload, headers=headers)
+
+    async def runway_success(self, job_id: int, results: list[str]):
+        async with httpx.AsyncClient(timeout=30) as s:
+            payload = {'job_id': job_id, 'results': results}
+            headers = {'x-telegram-init-data': self.api_key}
+            await s.post(f"{self.base}/api/runway/status", json=payload, headers=headers)

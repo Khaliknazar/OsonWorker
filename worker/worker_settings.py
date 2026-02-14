@@ -1,6 +1,6 @@
 import os
 from arq.connections import RedisSettings
-from worker.tasks import generate_and_send
+from worker.tasks import generate_and_send, poll_job, runway_create
 
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
@@ -11,7 +11,7 @@ ARQ_QUEUE = os.getenv("ARQ_QUEUE")
 
 class WorkerSettings:
     redis_settings = RedisSettings(host=REDIS_HOST, port=REDIS_PORT, database=REDIS_DB, password=REDIS_PASSWORD )
-    functions = [generate_and_send]
+    functions = [generate_and_send, runway_create, poll_job]
 
     # This worker listens to one queue (best for per-model scaling)
     queue_name = ARQ_QUEUE
