@@ -21,6 +21,19 @@ async def post_json(path: str, body: dict) -> dict:
             return {'code': r.status_code, 'error': js['error']}
         return js
 
+async def get_json(path: str) -> dict:
+    async with httpx.AsyncClient(timeout=30) as s:
+        r = await s.get(
+            f"{BASE}{path}",
+            headers={"Content-Type": "application/json", "Authorization": f"Bearer {config.RUNWAY_API_KEY}",
+                     "X-Runway-Version": "2024-11-06"}
+        )
+        r.raise_for_status()
+        js = r.json()
+        if r.status_code != 200:
+            return {'code': r.status_code, 'error': js['error']}
+        return js
+
 
 async def create_task(payload: dict):
     j = await post_json(payload["request_url"], payload['body'])
@@ -43,7 +56,7 @@ async def get_task(job_data: dict):
     if time.time() - started_at > 10 * 60:  # 10 minutes
         raise RuntimeError("Generation timeout")
 
-    j = await post_json(f'/v1/tasks/{task_id}')
+    j = await get_json(f'/v1/tasks/{task_id}')
 
     status = j["status"]
 
