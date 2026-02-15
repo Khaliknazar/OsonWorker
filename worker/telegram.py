@@ -18,11 +18,10 @@ class TelegramClient:
 
     async def edit_text(self, chat_id: int, text: str, message_id: int):
         async with httpx.AsyncClient(timeout=30) as s:
-            a = await s.post(
+            await s.post(
                 f"{self.base}/editMessageText",
-                data={"chat_id": chat_id, "text": text,'message_id': message_id, "parse_mode": "HTML"},
+                data={"chat_id": chat_id, "text": text, 'message_id': message_id, "parse_mode": "HTML"},
             )
-            return a.json()
 
     async def send_action(self, chat_id: int, action: str):
         async with httpx.AsyncClient(timeout=10) as s:

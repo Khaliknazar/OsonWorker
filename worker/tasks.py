@@ -98,7 +98,7 @@ async def poll_job(ctx, job_data: dict):
     progress = r.get('progress', False)
     if progress:
         try:
-            await tg.edit_text(chat_id=user_id, text=text.format(progress=progress * 100),
+            await tg.edit_text(chat_id=user_id, text=text.format(progress=float(progress) * 100),
                                message_id=int(job_data['message_id']))
         except Exception as e:
             logging.error(e)

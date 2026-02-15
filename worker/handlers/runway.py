@@ -61,7 +61,7 @@ async def get_task(job_data: dict):
     status = j["status"]
 
     if status == "SUCCEEDED":
-        result_url = j["result_url"]
+        result_url = j["output"]
 
         # ✅ FINAL RESULT
         return {
